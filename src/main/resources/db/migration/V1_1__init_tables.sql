@@ -15,7 +15,7 @@ create table appointments(
     user_profile_id bigint,
     role_id bigint,
     role_description varchar(255),
-    organisation_name(255),
+    organisation_name varchar(255),
     constraint appointment_pk primary key (id)
 );
 
