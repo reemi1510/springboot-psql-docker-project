@@ -17,4 +17,9 @@ public class UserTest {
         assertThat(user).hasFieldOrProperty("lastUpdated");
     }
 
+    @Test
+    public void creates_user_correctly() {
+        User user = new User("example@test.com", "Testy", "McTestface");
+        assertThat(user.getId()).isZero();
+    }
 }
