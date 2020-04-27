@@ -50,6 +50,14 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Appointment> appointments = new ArrayList<>();
 
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
     public User(String email, String firstName, String lastName) {
         this.email = email;
         this.firstName = firstName;

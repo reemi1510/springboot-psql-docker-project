@@ -1,27 +1,47 @@
 package com.project.userprofile.domain;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class UserTest {
 
-    @Test
-    public void user_has_required_fields() {
-        User user = new User();
-        assertThat(user).hasFieldOrProperty("id");
-        assertThat(user).hasFieldOrProperty("email");
-        assertThat(user).hasFieldOrProperty("firstName");
-        assertThat(user).hasFieldOrProperty("lastName");
-        assertThat(user).hasFieldOrProperty("created");
-        assertThat(user).hasFieldOrProperty("lastUpdated");
-        assertThat(user).hasFieldOrProperty("appointments");
+    private String firstName = "Testy";
+    private String lastName = "McTestface";
+    private String email = "example@test.com";
+    User user;
+
+    @Before
+    public void setUp() {
+        user = new User(email, firstName, lastName);
     }
 
     @Test
     public void creates_user_correctly() {
-        User user = new User("example@test.com", "Testy", "McTestface");
+        assertThat(user.getFirstName()).isEqualTo(firstName);
+        assertThat(user.getLastName()).isEqualTo(lastName);
+        assertThat(user.getEmail()).isEqualTo(email);
         assertThat(user.getId()).isZero();
     }
 
+    @Test
+    public void adds_appointments_to_user_correctly() {
+        Appointment appointment = mock(Appointment.class);
+        user.addAppointment(appointment);
+
+        assertThat(user.getAppointments()).contains(appointment);
+    }
+
+    @Test
+    public void adds_timestamps_correctly() {
+        user.setCreated(LocalDateTime.now());
+        user.setLastUpdated(LocalDateTime.now());
+
+        assertThat(user.getCreated()).isNotNull();
+        assertThat(user.getLastUpdated()).isNotNull();
+    }
 }
