@@ -15,6 +15,7 @@ public class UserTest {
         assertThat(user).hasFieldOrProperty("lastName");
         assertThat(user).hasFieldOrProperty("created");
         assertThat(user).hasFieldOrProperty("lastUpdated");
+        assertThat(user).hasFieldOrProperty("appointments");
     }
 
     @Test
@@ -22,4 +23,5 @@ public class UserTest {
         User user = new User("example@test.com", "Testy", "McTestface");
         assertThat(user.getId()).isZero();
     }
+
 }
