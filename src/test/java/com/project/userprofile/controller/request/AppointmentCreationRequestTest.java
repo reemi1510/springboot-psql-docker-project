@@ -6,13 +6,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AppointmentCreationRequestTest {
 
-    AppointmentCreationRequest appointmentCreationRequest;
+    private AppointmentCreationRequest appointmentCreationRequest;
+    private long roleId = 1;
+    private String roleDescription = "Developer";
+    private String organisationName = "Test Org";
 
     @Test
-    public void has_required_fields() {
-        appointmentCreationRequest = new AppointmentCreationRequest();
-        assertThat(appointmentCreationRequest).hasFieldOrProperty("roleId");
-        assertThat(appointmentCreationRequest).hasFieldOrProperty("roleDescription");
-        assertThat(appointmentCreationRequest).hasFieldOrProperty("organisationName");
+    public void creates_appointment_request_correctly() {
+        appointmentCreationRequest = new AppointmentCreationRequest(roleId, roleDescription, organisationName);
+        assertThat(appointmentCreationRequest.getRoleId()).isEqualTo(roleId);
+        assertThat(appointmentCreationRequest.getRoleDesc()).isEqualTo(roleDescription);
+        assertThat(appointmentCreationRequest.getOrgName()).isEqualTo(organisationName);
+    }
+
+    @Test
+    public void buildMethodTest() {
+        appointmentCreationRequest = AppointmentCreationRequest.builder()
+                .roleId(roleId)
+                .roleDesc(roleDescription)
+                .orgName(organisationName)
+                .build();
+
+        assertThat(appointmentCreationRequest.getRoleId()).isEqualTo(roleId);
+        assertThat(appointmentCreationRequest.getRoleDesc()).isEqualTo(roleDescription);
+        assertThat(appointmentCreationRequest.getOrgName()).isEqualTo(organisationName);
     }
 }
