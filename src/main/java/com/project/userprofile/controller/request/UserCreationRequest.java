@@ -2,9 +2,13 @@ package com.project.userprofile.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
+@Builder
 public class UserCreationRequest {
 
     private String email;
