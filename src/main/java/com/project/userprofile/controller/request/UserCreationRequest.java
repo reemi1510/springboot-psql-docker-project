@@ -5,12 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
 @Builder
 public class UserCreationRequest {
 
+    @NotNull
+    @NotEmpty
     private String email;
 
     private String firstName;
