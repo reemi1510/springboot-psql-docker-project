@@ -25,4 +25,21 @@ public class UserCreationRequestTest {
         assertThat(userCreationRequest.getLastName()).isEqualTo(lastName);
         assertThat(userCreationRequest.getAppointments()).contains(appointment);
     }
+
+    @Test
+    public void buildMethodTest() {
+        appointments.add(appointment);
+
+        userCreationRequest = UserCreationRequest.builder()
+                .email(email)
+                .firstName(firstName)
+                .lastName(lastName)
+                .appointments(appointments)
+                .build();
+
+        assertThat(userCreationRequest.getEmail()).isEqualTo(email);
+        assertThat(userCreationRequest.getFirstName()).isEqualTo(firstName);
+        assertThat(userCreationRequest.getLastName()).isEqualTo(lastName);
+        assertThat(userCreationRequest.getAppointments()).contains(appointment);
+    }
 }
