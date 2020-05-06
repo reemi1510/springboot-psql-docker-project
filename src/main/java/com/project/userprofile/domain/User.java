@@ -8,10 +8,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +21,8 @@ import java.util.List;
 public class User {
 
     @Id
+    @SequenceGenerator(sequenceName = "public.user_id_seq", name = "userIdSequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userIdSequence")
     private long id;
 
     @Column(name = "email_address")

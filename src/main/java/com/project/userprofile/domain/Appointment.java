@@ -14,6 +14,8 @@ import javax.validation.constraints.Size;
 public class Appointment {
 
     @Id
+    @SequenceGenerator(sequenceName = "public.appointment_id_seq", name = "appointmentIdSequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointmentIdSequence")
     private long id;
 
     @Column(name = "role_id")
