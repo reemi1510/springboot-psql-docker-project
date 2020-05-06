@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,8 +38,12 @@ public class UserProfileControllerTest {
     @Test
     public void creates_user_correctly() {
 
+        HttpStatus expectedHttpStatus = HttpStatus.CREATED;
+
         ResponseEntity actual = sut.registerUser(userCreationRequestMock);
 
         assertThat(actual).isNotNull();
+        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+        verify(userServiceMock, times(1)).createUserFrom(eq(userCreationRequestMock));
     }
 }
