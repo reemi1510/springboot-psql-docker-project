@@ -144,11 +144,16 @@ public class CreateUserTest {
                 .body(request)
                 .when()
                 .post(baseUrl + "/api/v1/users")
+                .peek()
                 .andReturn();
 
         response.then()
                 .assertThat()
-                .statusCode(400);
+                .statusCode(400)
+                .assertThat()
+                .extract()
+                .path("message")
+                .equals("Email field cannot be empty");
     }
 
     private RequestSpecification givenHeaders() {
