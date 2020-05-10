@@ -5,15 +5,20 @@ import com.project.userprofile.controller.response.UserResponse;
 import com.project.userprofile.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+@RequestMapping(path = "api/v1/users")
 @RestController
 public class UserProfileController {
 
     @Autowired
     protected UserService userService;
 
-    public ResponseEntity<UserResponse> registerUser(UserCreationRequest userCreationRequest) {
+    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<UserResponse> registerUser(@RequestBody UserCreationRequest userCreationRequest) {
 
         UserResponse userResponse = userService.createUserFrom(userCreationRequest);
 
