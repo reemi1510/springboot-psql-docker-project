@@ -25,7 +25,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userIdSequence")
     private long id;
 
-    @Column(name = "email_address")
+    @Column(name = "email_address", unique = true)
     @Size(max = 255)
     private String email;
 

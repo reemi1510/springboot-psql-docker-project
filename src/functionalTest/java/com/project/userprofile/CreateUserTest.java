@@ -21,6 +21,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -55,9 +56,10 @@ public class CreateUserTest {
     public void can_create_new_user_profile() {
 
         appointments.add(appointment);
+        String email = randomAlphabetic(6) + "@test.com";
 
         UserCreationRequest request = UserCreationRequest.builder()
-                .email("example@test.com")
+                .email(email)
                 .firstName("Testy")
                 .lastName("McTestface")
                 .appointments(appointments)
@@ -75,7 +77,7 @@ public class CreateUserTest {
                 .statusCode(201);
 
         ArrayList appointmentResponse = response.then()
-                .body("email", equalTo("example@test.com"))
+                .body("email", equalTo(email))
                 .extract()
                 .path("appointments");
 
@@ -90,9 +92,10 @@ public class CreateUserTest {
     @Test
     public void cannot_use_existing_email_to_create_new_user_profile() {
         appointments.add(appointment);
+        String email = randomAlphabetic(6) + "@test.com";
 
         UserCreationRequest request = UserCreationRequest.builder()
-                .email("example@test.com")
+                .email(email)
                 .firstName("Testy")
                 .lastName("McTestface")
                 .appointments(appointments)

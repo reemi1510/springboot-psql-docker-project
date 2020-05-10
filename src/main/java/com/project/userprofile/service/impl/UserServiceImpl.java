@@ -1,5 +1,6 @@
 package com.project.userprofile.service.impl;
 
+import com.project.userprofile.controller.advice.DuplicateEmailException;
 import com.project.userprofile.controller.request.AppointmentCreationRequest;
 import com.project.userprofile.controller.request.UserCreationRequest;
 import com.project.userprofile.controller.response.UserResponse;
@@ -26,6 +27,10 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUserFrom(UserCreationRequest request) {
 
         User newUser = new User(request.getEmail(), request.getFirstName(), request.getLastName());
+
+        if (userRepository.findByEmail(newUser.getEmail()) != null) {
+            throw new DuplicateEmailException();
+        }
 
         User user = userRepository.save(newUser);
 
