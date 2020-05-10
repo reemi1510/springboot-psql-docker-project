@@ -73,6 +73,40 @@ public class CreateUserTest {
         assertThat(appointmentResponse.get(0)).hasFieldOrPropertyWithValue("roleDescription", "Dev");
     }
 
+    //GIVEN a user provides profile details
+    //AND the email address has been used before
+    //WHEN the user sends these details
+    //THEN they receive a fail response
+    @Test
+    public void cannot_use_existing_email_to_create_new_user_profile() {
+        appointments.add(appointment);
+
+        UserCreationRequest request = UserCreationRequest.builder()
+                .email("example@test.com")
+                .firstName("Testy")
+                .lastName("McTestface")
+                .appointments(appointments)
+                .build();
+
+        Response response = givenHeaders()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post(baseUrl + "/api/v1/users")
+                .andReturn();
+
+        Response response2 = givenHeaders()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post(baseUrl + "/api/v1/users")
+                .andReturn();
+
+        response2.then()
+                .assertThat()
+                .statusCode(400);
+    }
+
     private RequestSpecification givenHeaders() {
         return RestAssured.given()
                 .relaxedHTTPSValidation()
