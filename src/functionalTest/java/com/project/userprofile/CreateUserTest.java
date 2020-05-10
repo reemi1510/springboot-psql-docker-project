@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,11 @@ public class CreateUserTest {
 
     private List<AppointmentCreationRequest> appointments = new ArrayList<>();
     private AppointmentCreationRequest appointment = new AppointmentCreationRequest(1, "Dev", "Test");
+
+    @BeforeClass
+    public static void setUp() {
+        System.out.println(container.getLogs());
+    }
 
     //GIVEN a user provides profile details
     //AND the email address has not been used before
@@ -105,6 +111,7 @@ public class CreateUserTest {
         response2.then()
                 .assertThat()
                 .statusCode(400);
+
     }
 
     private RequestSpecification givenHeaders() {
