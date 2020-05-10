@@ -23,7 +23,6 @@ import java.util.List;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RunWith(SpringRunner.class)
@@ -74,10 +73,14 @@ public class CreateUserTest {
 
         response.then()
                 .assertThat()
-                .statusCode(201);
+                .statusCode(201)
+                .assertThat()
+                .extract()
+                .path("email")
+                .equals(email);
 
         ArrayList appointmentResponse = response.then()
-                .body("email", equalTo(email))
+                .assertThat()
                 .extract()
                 .path("appointments");
 
@@ -117,8 +120,35 @@ public class CreateUserTest {
 
         response2.then()
                 .assertThat()
-                .statusCode(400);
+                .statusCode(400)
+                .assertThat()
+                .extract()
+                .path("message")
+                .equals("Email already registered");
+    }
 
+    @Test
+    public void email_must_not_be_null() {
+        appointments.add(appointment);
+        String email = randomAlphabetic(6) + "@test.com";
+
+        UserCreationRequest request = UserCreationRequest.builder()
+                .email(null)
+                .firstName("Testy")
+                .lastName("McTestface")
+                .appointments(appointments)
+                .build();
+
+        Response response = givenHeaders()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post(baseUrl + "/api/v1/users")
+                .andReturn();
+
+        response.then()
+                .assertThat()
+                .statusCode(400);
     }
 
     private RequestSpecification givenHeaders() {
