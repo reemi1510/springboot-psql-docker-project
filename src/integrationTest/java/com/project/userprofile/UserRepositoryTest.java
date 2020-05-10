@@ -3,6 +3,8 @@ package com.project.userprofile;
 import com.project.userprofile.domain.User;
 import com.project.userprofile.persistence.UserRepository;
 import com.project.userprofile.util.FunctionalTestsContainer;
+import org.flywaydb.core.Flyway;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,6 +29,14 @@ public class UserRepositoryTest {
     @Autowired
     protected UserRepository userRepository;
 
+    @BeforeClass
+    public static void setUp() {
+        Flyway flyway = Flyway.configure().dataSource(container.getJdbcUrl(), container.getUsername(), container.getPassword()).load();
+        flyway.migrate();
+
+        System.out.println(container.getLogs());
+    }
+
     @Test
     public void persists_valid_new_users() {
         userRepository.save(new User("user1@test.com", "User", "One"));
@@ -36,7 +48,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void persists_each_user_with_unique_id() {
+    public void persists_each_user_with_unique_id() throws IOException, InterruptedException {
         User user1 = userRepository.save(new User("User1@test.com", "User", "One"));
         User user2 = userRepository.save(new User("User2@test.com", "User", "Two"));
 
@@ -45,5 +57,6 @@ public class UserRepositoryTest {
 
         assertThat(persistedUser1).isEqualTo(user1);
         assertThat(persistedUser2).isEqualTo(user2);
+        assertThat(persistedUser1.getId()).isNotEqualTo(persistedUser2.getId());
     }
 }
