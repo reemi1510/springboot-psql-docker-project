@@ -36,9 +36,6 @@ public class CreateUserTest {
     @Value("http://localhost:${local.server.port}")
     String baseUrl;
 
-    private List<AppointmentCreationRequest> appointments = new ArrayList<>();
-    private AppointmentCreationRequest appointment = new AppointmentCreationRequest(1, "Dev", "Test");
-
     @BeforeClass
     public static void setUp() {
         Flyway flyway = Flyway.configure().dataSource(container.getJdbcUrl(), container.getUsername(), container.getPassword()).load();
@@ -54,22 +51,11 @@ public class CreateUserTest {
     @Test
     public void can_create_new_user_profile() {
 
-        appointments.add(appointment);
         String email = randomAlphabetic(6) + "@test.com";
 
-        UserCreationRequest request = UserCreationRequest.builder()
-                .email(email)
-                .firstName("Testy")
-                .lastName("McTestface")
-                .appointments(appointments)
-                .build();
+        UserCreationRequest request = createUser(email);
 
-        Response response = givenHeaders()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when()
-                .post(baseUrl + "/api/v1/users")
-                .andReturn();
+        Response response = postRequestToUsersEndpoint(request);
 
         response.then()
                 .assertThat()
@@ -94,29 +80,14 @@ public class CreateUserTest {
     //THEN they receive a fail response
     @Test
     public void cannot_use_existing_email_to_create_new_user_profile() {
-        appointments.add(appointment);
+//        appointments.add(appointment);
         String email = randomAlphabetic(6) + "@test.com";
 
-        UserCreationRequest request = UserCreationRequest.builder()
-                .email(email)
-                .firstName("Testy")
-                .lastName("McTestface")
-                .appointments(appointments)
-                .build();
+        UserCreationRequest request = createUser(email);
 
-        Response response = givenHeaders()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when()
-                .post(baseUrl + "/api/v1/users")
-                .andReturn();
+        Response response = postRequestToUsersEndpoint(request);
 
-        Response response2 = givenHeaders()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when()
-                .post(baseUrl + "/api/v1/users")
-                .andReturn();
+        Response response2 = postRequestToUsersEndpoint(request);
 
         response2.then()
                 .assertThat()
@@ -129,23 +100,10 @@ public class CreateUserTest {
 
     @Test
     public void email_must_not_be_null() {
-        appointments.add(appointment);
-        String email = randomAlphabetic(6) + "@test.com";
 
-        UserCreationRequest request = UserCreationRequest.builder()
-                .email(null)
-                .firstName("Testy")
-                .lastName("McTestface")
-                .appointments(appointments)
-                .build();
+        UserCreationRequest request = createUser(null);
 
-        Response response = givenHeaders()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when()
-                .post(baseUrl + "/api/v1/users")
-                .peek()
-                .andReturn();
+        Response response = postRequestToUsersEndpoint(request);
 
         response.then()
                 .assertThat()
@@ -162,5 +120,32 @@ public class CreateUserTest {
                 .baseUri(baseUrl)
                 .header("Content-Type", APPLICATION_JSON_VALUE)
                 .header("Accepts", APPLICATION_JSON_VALUE);
+    }
+
+    private Response postRequestToUsersEndpoint(UserCreationRequest request) {
+        Response response = givenHeaders()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/api/v1/users")
+                .andReturn();
+
+        return response;
+    }
+
+    private UserCreationRequest createUser(String email) {
+        List<AppointmentCreationRequest> appointments = new ArrayList<>();
+        AppointmentCreationRequest appointment = new AppointmentCreationRequest(1, "Dev", "Test");
+
+        appointments.add(appointment);
+
+        UserCreationRequest request = UserCreationRequest.builder()
+                .email(email)
+                .firstName("Testy")
+                .lastName("McTestface")
+                .appointments(appointments)
+                .build();
+
+        return request;
     }
 }
